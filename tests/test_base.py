@@ -1,6 +1,6 @@
 # Tests are defined here
-from ukp_project_template import BaseClass
-from ukp_project_template.subpackage import SubPackageClass
+from naacl2024_cove import BaseClass
+from naacl2024_cove.subpackage import SubPackageClass
 
 def test_template():
     assert True
