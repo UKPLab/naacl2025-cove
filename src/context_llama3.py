@@ -1,11 +1,9 @@
-
 import argparse
 import pandas as pd
 import tqdm
 import random
 import re
 import numpy as np
-import json
 import os
 import spacy
 import torch
@@ -220,7 +218,7 @@ if __name__=='__main__':
         for ix in range(0, len(context_info)):
             # skipping exact matches which have already received contexts
             index = indices_no_exact_match[ix]
-            predicted_contexts[index] = answers
+            predicted_contexts[index] = answers.replace('\n', '').strip().replace('    ', ' ')
 
 
         instances = pd.DataFrame({"image_id": [item['image_id'] for item in instances[i:i+batch_size]],
