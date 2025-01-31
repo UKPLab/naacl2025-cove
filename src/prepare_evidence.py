@@ -1,4 +1,3 @@
-#Prepare all evidence and group them in one csv file
 import json
 import pandas as pd
 import argparse
@@ -56,6 +55,10 @@ if __name__=='__main__':
         data = json.load(open(f'data/5pils_ooc/test.json', 'r'))
         images_root_folder = 'data/5pils_ooc'
 
+    #Prepare output folders
+    os.makedirs('results', exist_ok=True)
+    os.makedirs('results/intermediate', exist_ok=True)
+
     #Load predicted captions for the entire image
     predicted_captions = pd.read_csv(f'data/{args.dataset}/evidence/{args.split}/automated_captions/general_captions.csv')
     
@@ -101,7 +104,7 @@ if __name__=='__main__':
         instances.append(instance_dict)
 
 
-    #Load spacy mode
+    #Load spacy model
     nlp = spacy.load("en_core_web_lg")
     #Load GENRE model
     tokenizer_genre = AutoTokenizer.from_pretrained("facebook/genre-linking-blink")
@@ -113,21 +116,17 @@ if __name__=='__main__':
     cropped_people_captions = pd.read_csv(f'data/{args.dataset}/evidence/{args.split}/automated_captions/cropped_people_captions.csv')
     face_embeddings = json.load(open(f'data/{args.dataset}/embeddings/{args.split}/face_embeddings.json', 'r'))
     direct_search_scores = pd.read_csv(f'data/{args.dataset}/evidence/{args.split}/direct_search_clip_L14_similarities.csv')
-    vqa_detected_objects = pd.read_csv(f'data/{args.dataset}/evidence/{args.split}/automated_captions/object_captions.csv')
     wiki_buildings_products = pd.read_csv(f'data/{args.dataset}/evidence/{args.split}/buildings_products_scores.csv')
     clip_embeddings = json.load(open(f'data/{args.dataset}/embeddings/{args.split}/clip_L14.json', 'r'))
     oven_entities = json.load(open(f'data/{args.dataset}/evidence/{args.split}/oven_entities.json', 'r'))
 
-
-    for i in tqdm.tqdm(range(0, len(instances), args.batch_size)):
+    batch_size = args.batch_size
+    for i in tqdm.tqdm(range(0, len(instances), batch_size)):
 
         if i+batch_size > len(instances):
             #Final batch length calculation
             batch_size = len(instances) - i
 
-        veracity = np.empty(batch_size, dtype='object')
-        predicted_contexts = np.empty(batch_size, dtype='object')
-        original_veracity_outputs = np.empty(batch_size, dtype='object')
         wiki_clip_results = np.empty(batch_size, dtype='object')
         is_direct_search_match = np.empty(batch_size, dtype='object')
         is_direct_search_non_match = np.empty(batch_size, dtype='object')
@@ -199,8 +198,6 @@ if __name__=='__main__':
                     caption_to_search = re.sub(non_alphanum_pattern, '', caption_to_search)
                     evidence_to_test = re.sub(non_alphanum_pattern, '', evidence_to_test)
                     if re.search(caption_to_search, evidence_to_test):
-                        veracity[batch_index] = 'pristine'
-                        original_veracity_outputs[batch_index] = "Direct match found in evidence."
                         wiki_clip_results[batch_index] = []
                         is_direct_match = True
                         direct_match_captions.append(caption)
@@ -294,25 +291,25 @@ if __name__=='__main__':
             obj_captions_list[batch_index] = object_caption
         
 
-    instances = pd.DataFrame({"image_id": [item['image_id'] for item in instances[i:i+batch_size]],
-                        "caption_id": [item['caption_id'] for item in instances[i:i+batch_size]],
-                        "caption": [item['caption'] for item in instances[i:i+batch_size]],
-                        "true_caption": [item['true_caption'] for item in instances[i:i+batch_size]],
-                        "true_veracity": [item['true_veracity'] for item in instances[i:i+batch_size]],
-                        "people_caption": people_captions_list,
-                        "object_caption": obj_captions_list,
-                        "evidence_captions": [item['evidence'] for item in instances[i:i+batch_size]],
-                        "vis_entities": [item['vis_entities'] for item in instances[i:i+batch_size]],
-                        "wiki_clip": wiki_clip_results,
-                        "direct_search_match": is_direct_search_match,
-                        "direct_search_non_match": is_direct_search_non_match,
-                        "max_direct_search_sim": max_dir_search_sim,
-                        "min_direct_search_sim": min_dir_search_sim,
-                        "image_path": [item['image_path'] for item in instances[i:i+batch_size]],})
+        instances = pd.DataFrame({"image_id": [item['image_id'] for item in instances[i:i+batch_size]],
+                            "caption_id": [item['caption_id'] for item in instances[i:i+batch_size]],
+                            "caption": [item['caption'] for item in instances[i:i+batch_size]],
+                            "true_caption": [item['true_caption'] for item in instances[i:i+batch_size]],
+                            "true_veracity": [item['true_veracity'] for item in instances[i:i+batch_size]],
+                            "people_caption": people_captions_list,
+                            "object_caption": obj_captions_list,
+                            "evidence_captions": [item['evidence'] for item in instances[i:i+batch_size]],
+                            "vis_entities": [item['vis_entities'] for item in instances[i:i+batch_size]],
+                            "wiki_clip": wiki_clip_results,
+                            "direct_search_match": is_direct_search_match,
+                            "direct_search_non_match": is_direct_search_non_match,
+                            "max_direct_search_sim": max_dir_search_sim,
+                            "min_direct_search_sim": min_dir_search_sim,
+                            "image_path": [item['image_path'] for item in instances[i:i+batch_size]],})
 
-    output_path = f"{args.dataset}/context_input_{args.dataset}_{args.split}.csv"
-    instances.to_csv(output_path,
-                mode="a",
-                index=False,
-                sep=",",
-                header=not os.path.exists(output_path))
+        output_path = f"results/intermediate/context_input_{args.dataset}_{args.split}.csv"
+        instances.to_csv(output_path,
+                    mode="a",
+                    index=False,
+                    sep=",",
+                    header=not os.path.exists(output_path))

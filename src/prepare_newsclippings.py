@@ -152,7 +152,7 @@ if __name__=='__main__':
         val = json.load(file)
 
     train_samples = random.sample(train['annotations'], 5000)
-    json.dump(train_samples, open("data/newsclippings/train_5k.json", 'w'))
+    json.dump(train_samples, open("data/newsclippings/train.json", 'w'))
 
     val_samples = random.sample(val['annotations'], 1500)
-    json.dump(val_samples, open("data/newsclippings/val_1500.json", 'w'))
+    json.dump(val_samples, open("data/newsclippings/val.json", 'w'))

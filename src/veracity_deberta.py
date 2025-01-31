@@ -44,8 +44,8 @@ if __name__=='__main__':
     set_seed(args.seed)
 
     #Load data
-    train = pd.read_csv('results/newsclippings_train_5k.csv') 
-    val = pd.read_csv('results/newsclippings_val_1500.csv')
+    train = pd.read_csv('results/newsclippings_train.csv') 
+    val = pd.read_csv('results/newsclippings_val.csv')
     if args.dataset=='newsclippings':
         test = pd.read_csv('results/newsclippings_test.csv') 
     else:
