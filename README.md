@@ -1,115 +1,118 @@
-<p  align="center">
-  <img src='logo.png' width='200'>
+# COVE: COntext and VEracity prediction for out-of-context images
+
+[![License](https://img.shields.io/github/license/UKPLab/ukp-project-template)](https://opensource.org/licenses/Apache-2.0)
+[![Python Versions](https://img.shields.io/badge/Python-3.9-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
+
+This repository contains the implementation of COVE, introduced in the NAACL 2024 paper: ["COVE: COntext and VEracity prediction for out-of-context images](add_url). The code is released under an **Apache 2.0** license.
+
+Contact person: [Jonathan Tonglet](mailto:jonathan.tonglet@tu-darmstadt.de) 
+
+[UKP Lab](https://www.ukp.tu-darmstadt.de/) | [TU Darmstadt](https://www.tu-darmstadt.de/)
+
+Don't hesitate to send us an e-mail or report an issue, if something is broken (and it shouldn't be) or if you have further questions. 
+
+## News 📢
+
+- Our paper is accepted to NAACL 2024 Main Conference! See you in Albuquerque 🌵
+
+## Abstract 
+> Images taken out of their context are the most prevalent form of multimodal misinformation. Debunking them requires  (1) providing the true context of the image and (2) checking the veracity of the image's caption. However, existing automated fact-checking methods fail to tackle both objectives explicitly. In this work, we introduce COVE, a new method that predicts first the true COntext of the image and then uses it to predict the VEracity of the caption. COVE beats the  SOTA context prediction model on all context items, often by more than five percentage points. It is competitive with the best veracity prediction models on synthetic data and outperforms them on real-world data, showing that it is beneficial to combine the two tasks sequentially. Finally, we conduct a human study that reveals that the predicted context is a reusable and interpretable artifact to verify new out-of-context captions for the same image.
+
+<p align="center">
+  <img width="55%" src="assets/intro.png" alt="header" />
 </p>
 
-# naacl2024_cove
-[![Arxiv](https://img.shields.io/badge/Arxiv-YYMM.NNNNN-red?style=flat-square&logo=arxiv&logoColor=white)](https://put-here-your-paper.com)
-[![License](https://img.shields.io/github/license/UKPLab/naacl2024-cove)](https://opensource.org/licenses/Apache-2.0)
-[![Python Versions](https://img.shields.io/badge/Python-3.9-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
-[![CI](https://github.com/UKPLab/naacl2024-cove/actions/workflows/main.yml/badge.svg)](https://github.com/UKPLab/naacl2024-cove/actions/workflows/main.yml)
-
-This is the official template for new Python projects at UKP Lab. It was adapted for the needs of UKP Lab from the excellent [python-project-template](https://github.com/rochacbruno/python-project-template/) by [rochacbruno](https://github.com/rochacbruno).
-
-It should help you start your project and give you continuous status updates on the development through [GitHub Actions](https://docs.github.com/en/actions).
-
-> **Abstract:** The study of natural language processing (NLP) has gained increasing importance in recent years, with applications ranging from machine translation to sentiment analysis. Properly managing Python projects in this domain is of paramount importance to ensure reproducibility and facilitate collaboration. The template provides a structured starting point for projects and offers continuous status updates on development through GitHub Actions. Key features include a basic setup.py file for installation, packaging, and distribution, documentation structure using mkdocs, testing structure using pytest, code linting with pylint, and entry points for executing the program with basic CLI argument parsing. Additionally, the template incorporates continuous integration using GitHub Actions with jobs to check, lint, and test the project, ensuring robustness and reliability throughout the development process.
-
-Contact person: [Federico Tiblias](mailto:federico.tiblias@tu-darmstadt.de) 
-
-[UKP Lab](https://www.ukp.tu-darmstadt.de/) | [TU Darmstadt](https://www.tu-darmstadt.de/
-)
-
-Don't hesitate to send us an e-mail or report an issue, if something is broken (and it shouldn't be) or if you have further questions.
 
 
-## Getting Started
 
-> **DO NOT CLONE OR FORK**
+## Environment
 
-If you want to set up this template:
-
-1. Request a repository on UKP Lab's GitHub by following the standard procedure on the wiki. It will install the template directly. Alternatively, set it up in your personal GitHub account by clicking **[Use this template](https://github.com/rochacbruno/python-project-template/generate)**.
-2. Wait until the first run of CI finishes. Github Actions will commit to your new repo with a "✅ Ready to clone and code" message.
-3. Delete optional files: 
-    - If you don't need automatic documentation generation, you can delete folder `docs`, file `.github\workflows\docs.yml` and `mkdocs.yml`
-    - If you don't want automatic testing, you can delete folder `tests` and file `.github\workflows\tests.yml`
-4. Prepare a virtual environment:
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install .
-pip install -r requirements-dev.txt # Only needed for development
-```
-5. Adapt anything else (for example this file) to your project. 
-
-6. Read the file [ABOUT_THIS_TEMPLATE.md](ABOUT_THIS_TEMPLATE.md)  for more information about development.
-
-## Usage
-
-### Using the classes
-
-To import classes/methods of `naacl2024_cove` from inside the package itself you can use relative imports: 
-
-```py
-from .base import BaseClass # Notice how I omit the package name
-
-BaseClass().something()
-```
-
-To import classes/methods from outside the package (e.g. when you want to use the package in some other project) you can instead refer to the package name:
-
-```py
-from naacl2024_cove import BaseClass # Notice how I omit the file name
-from naacl2024_cove.subpackage import SubPackageClass # Here it's necessary because it's a subpackage
-
-BaseClass().something()
-SubPackageClass().something()
-```
-
-### Using scripts
-
-This is how you can use `naacl2024_cove` from command line:
-
-```bash
-$ python -m naacl2024_cove
-```
-
-### Expected results
-
-After running the experiments, you should expect the following results:
-
-(Feel free to describe your expected results here...)
-
-### Parameter description
-
-* `x, --xxxx`: This parameter does something nice
-
-* ...
-
-* `z, --zzzz`: This parameter does something even nicer
-
-## Development
-
-Read the FAQs in [ABOUT_THIS_TEMPLATE.md](ABOUT_THIS_TEMPLATE.md) to learn more about how this template works and where you should put your classes & methods. Make sure you've correctly installed `requirements-dev.txt` dependencies
-
-## Cite
-
-Please use the following citation:
+Follow these instructions to recreate the environment used for all our experiments.
 
 ```
-@InProceedings{smith:20xx:CONFERENCE_TITLE,
-  author    = {Smith, John},
-  title     = {My Paper Title},
-  booktitle = {Proceedings of the 20XX Conference on XXXX},
-  month     = mmm,
-  year      = {20xx},
-  address   = {Gotham City, USA},
-  publisher = {Association for XXX},
-  pages     = {XXXX--XXXX},
-  url       = {http://xxxx.xxx}
+$ conda create --name COVE python=3.9
+$ conda activate COVE
+$ pip install -r requirements.txt
+$ python -m spacy download en_core_web_lg
+```
+
+
+
+
+## Usage - prepare datasets
+
+### NewsCLIPpings
+
+- Follow the instructions on the NewsCLIPpings [repo](https://github.com/g-luo/news_clippings) to download the dataset. Place the data under a data/newsclippings/ folder
+
+- Follow the instructions on the CCN [repo](https://github.com/S-Abdelnabi/OoC-multi-modal-fc) to download the reverse image search and direct search evidence. Place the reverse image search results under a data/newsclippings/evidence/reverse_image_search/ folder and place the direct search results under a data/newsclippings/evidence/direct_search/ folder
+
+- Finally, run the following script to prepare the data
+```
+$ python scripts/prepare_newsclippings.py 
+```
+
+
+### 5Pils-OOC
+
+- Follow the instructions on the 5Pils [repo](https://github.com/UKPLab/5pils) to download the images of 5Pils. Place the images under data/5pils-ooc/processed_img/
+
+
+## Getting started - COntext and Veracity prediction for 5Pils-OOC
+
+<p align="center">
+  <img width="75%" src="assets/COVE.png" alt="header" />
+</p>
+
+COVE consist of 6 steps, the first 3 focusing on the collection of a diverse set of evidence using the Google Vision API, an index of Wikipedia entities, and captions generated by the MLLM LlavaNext. 
+
+The results of the first 3 steps for the 5Pils-OOC dataset is stored in results/intermediate/context_input_5pils_ooc_test.csv.
+If you want to run  (parts of) the 3 evidence collection steps, on 5Pils-OOC, NewsCLIPpings, or on your own data, please refer to **evidence_collection** in the scripts folder.
+
+Step 4: context prediction
+
+```
+$ python scripts/context_llama3.py --dataset 5pils_ooc --split test 
+```
+
+Step 5: Knowledge gap completion
+
+```
+$ python scripts/knowledge_gap_completion.py --dataset 5pils_ooc --split test 
+```
+
+Step 6: veracity prediction
+
+```
+$ python scripts/veracity_llama3.py --dataset 5pils_ooc --split test 
+```
+
+Finally, evaluate the performance on context and veracity prediction.
+
+```
+$ python scripts/evaluate.py --results_file 5pils_ooc_test.csv
+```
+ 
+Evaluation of Location requires 🌍 [GeoNames](https://www.geonames.org/). You will need to create a (free) account and provide your account name as input.
+
+
+### Google Vision API and Azure OpenAI service
+
+- COVE relies on object detection using the [Google Vision API](https://cloud.google.com/vision/docs/detecting-web). This step requires a Google Cloud account.
+
+## Citation
+
+If you find this work relevant to your research or use this code in your work, please cite our paper as follows:
+
+```bibtex 
+@inproceedings{tonglet-etal-2024-image,
+    title = "{COVE: COntext and VEracity prediction for out-of-context images",
+    author = "Tonglet, Jonathan  and
+      Thiem, Gabriel,  and
+      Gurevych, Iryna"
 }
 ```
 
 ## Disclaimer
 
-> This repository contains experimental software and is published for the sole purpose of giving additional background details on the respective publication. 
+> This repository contains experimental software and is published for the sole purpose of giving additional background details on the respective publication.

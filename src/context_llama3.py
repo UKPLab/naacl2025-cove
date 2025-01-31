@@ -234,8 +234,6 @@ if __name__=='__main__':
                             "wiki_clip": [item['wiki_clip'] for item in instances[i:i+batch_size]],
                             "direct_search_match": [item['direct_search_match'] for item in instances[i:i+batch_size]],
                             "direct_search_non_match": [item['direct_search_non_match'] for item in instances[i:i+batch_size]],
-                            "max_direct_search_sim": [item['max_direct_search_sim'] for item in instances[i:i+batch_size]],
-                            "min_direct_search_sim": [item['min_direct_search_sim'] for item in instances[i:i+batch_size]],
                             "image_path": [item['image_path'] for item in instances[i:i+batch_size]],
                             })
 

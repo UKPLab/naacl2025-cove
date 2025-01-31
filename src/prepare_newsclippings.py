@@ -4,11 +4,11 @@ import argparse
 import random
 
 
-def create_data_with_inverse_search_results(split, path_to_inverse_search_file):
+def create_data_with_inverse_search_results(split):
     if split in ['val', 'test']:
-        path = f"{path_to_inverse_search_file}/{split}"
+        path = f"data/newsclippings/evidence/reverse_image_search/{split}"
         entities_dict = {}
-        index_dict = json.load(open(f"{path_to_inverse_search_file}/{split}/{split}.json", "r"))
+        index_dict = json.load(open(f"data/newsclippings/evidence/reverse_image_search/{split}/{split}.json", "r"))
         caption_dict = {}
         for dir in os.listdir(path):
             ix = dir
@@ -57,10 +57,10 @@ def create_data_with_inverse_search_results(split, path_to_inverse_search_file):
                     item['scores_vis_entities'] = vis_entities_to_add[1]
     else:
         #Train has a different file structure
-        paths= [f"{path_to_inverse_search_file}/{split}_pt{i}/train" for i in range(1, 7)]
+        paths= [f"data/newsclippings/evidence/reverse_image_search/{split}_pt{i}/train" for i in range(1, 7)]
         entities_dict = {}
         caption_dict = {}
-        index_dicts = [json.load(open(f"{path_to_inverse_search_file}/{split}_pt{i}/train/train.json", 'r')) for i in range(1, 7)]
+        index_dicts = [json.load(open(f"data/newsclippings/evidence/reverse_image_search/{split}_pt{i}/train/train.json", 'r')) for i in range(1, 7)]
 
         for dir, index_dict in zip(paths, index_dicts):
             for subdir in os.listdir(dir):
@@ -127,12 +127,6 @@ def create_data_with_inverse_search_results(split, path_to_inverse_search_file):
 
 
 if __name__=='__main__':
-    parser = argparse.ArgumentParser(description='Prepare the inverse image search evidence files for newsclippings')
-    parser.add_argument('--path_to_inverse_search', type=str,  required=True, 
-                        help='Path to the directory containing the inverse search results.') 
-    
-    args = parser.parse_args()
-
     random.seed(42) #Set seed for sampling from train and val sets
 
     os.makedirs("data/newsclippings/evidence/", exist_ok=True)
@@ -141,9 +135,9 @@ if __name__=='__main__':
     os.makedirs("data/newsclippings/evidence/test", exist_ok=True)
 
     #Prepare the datasets
-    create_data_with_inverse_search_results('train', args.path_to_inverse_search)
-    create_data_with_inverse_search_results('val', args.path_to_inverse_search)
-    create_data_with_inverse_search_results('test', args.path_to_inverse_search)
+    create_data_with_inverse_search_results('train')
+    create_data_with_inverse_search_results('val')
+    create_data_with_inverse_search_results('test')
 
     #Prepare train and val subsets used in experiments
     with open("data/newsclippings/train.json", 'r') as file:
