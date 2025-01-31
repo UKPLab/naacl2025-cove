@@ -11,10 +11,6 @@ from utils import *
 from tqdm import tqdm
 from sklearn.metrics import accuracy_score, recall_score, f1_score
 
-#TO DO: add evaluation metrics for accuracy, recall, and f1 score
-
-
-
 #Load the metrics
 meteor = load('meteor')
 rouge = load('rouge')
@@ -26,10 +22,18 @@ def veracity_evaluation(results):
     accuracy = []
     recall_acc = []
     recall_ooc = []
-    f1_score = []
+    f1 = []
     for r in results:
         accuracy.append(accuracy_score(r['true_veracity'], r['predicted_veracity']))
-    return None
+        recall_acc.append(recall_score(r['true_veracity'], r['predicted_veracity']),pos_label='pristine')
+        recall_ooc.append(recall_score(r['true_veracity'], r['predicted_veracity']),pos_label='falsified')
+        f1.append(f1_score(r['true_veracity'], r['predicted_veracity'], average='macro'))
+    
+    accuracy = sum(accuracy)/len(accuracy)
+    recall_acc = sum(recall_acc)/len(recall_acc)
+    recall_ooc = sum(recall_ooc)/len(recall_ooc)
+    f1 = sum(f1)/len(f1)
+    return accuracy, recall_acc, recall_ooc, f1
 
 
 def extract_named_entities(text, model, entity_type):
@@ -69,8 +73,6 @@ def extract_named_entities(text, model, entity_type):
     return entities
 
 
-
-
 def get_numeric_date_label(date,spacy_model):
     '''
     Convert dates to numeric labels
@@ -87,7 +89,6 @@ def get_numeric_date_label(date,spacy_model):
     else:
         output = [d.isoformat() for d in output]
     return output
-
 
 
 
@@ -387,6 +388,37 @@ def evaluate_context_item(prediction,
         raise ValueError("Invalid task name")
     
 
+def get_context_answer(predicted_context,question='people'):
+    '''
+    Extract a specific context item answer from the predicted context
+    '''
+    all_questions= ['people: ', 'things: ','event: ','date: ','location: ','motivation: ','source: ']
+    if question + ': ' in predicted_context.lower():
+        try:
+            answer = predicted_context.lower().split(question+': ')[1]
+        except:
+            answer = predicted_context.lower().replace(question + ': ' ,'')
+        
+        for q in all_questions:
+            if q!= question + ': ':
+                if q in answer :
+                    answer = answer.split(q)[0]
+        if 'unknown.' in answer:
+            answer=False
+    elif '|||' in predicted_context.lower():
+        items = predicted_context.lower().split('|||')
+        if len(items)==6 and question=='source':
+            return False
+        answer = items[all_questions.index(question+': ')]
+        if 'unknown.' in answer:
+            answer=False
+        return answer
+    else:
+        answer = False
+    return answer
+    
+
+
 def context_evaluation(results, task, spacy_model=None, 
                        geonames_data=None, geonames_username=None, sleep_geonames=2):
     rougeL = [] 
@@ -416,7 +448,6 @@ def context_evaluation(results, task, spacy_model=None,
             exact_match.append(scores['exact_match'])
             delta.append(scores['delta'])
         elif task=='location':
-            # print(r)
             
             geonames_entries = set([d['query'] for d in load_json(geonames_data)])
             if type(r['ground_truth'])!=list:
@@ -487,25 +518,31 @@ def context_evaluation(results, task, spacy_model=None,
     if task=='source':
         print('RougeL score %s'%np.mean(rougeL))
         print('Meteor score %s'%np.mean(meteor))
+        return rougeL, meteor
     elif task=='date':
         print('EM score %s'%np.mean(exact_match))
         print('Delta score %s'%np.mean(delta))
+        return exact_match, delta
     elif task=='location':
         print('RougeL score %s'%np.mean(rougeL))
         print('Meteor score %s'%np.mean(meteor))
         print('OCDelta score %s'%np.mean(codelta))
         print('HL Delta score %s'%np.mean(hldelta))
+        return rougeL, meteor, codelta, hldelta
     elif task=='motivation' or task=='event':
         print('RougeL score %s'%np.mean(rougeL))
         print('Meteor score %s'%np.mean(meteor))
         print('Bert score %s'%np.mean(berts))
+        return rougeL, meteor, berts
     elif task=='object':
         print('RougeL score %s'%np.mean(rougeL))
         print('Meteor score %s'%np.mean(meteor))
         print('Bert score %s'%np.mean(berts))
+        return rougeL, meteor, berts
     elif task=='person':
         print('Recall score %s'%np.mean(recall))
         print('Precision score %s'%np.mean(precision))
         print('F1 score %s'%np.mean(f1))
+        return recall, precision, f1
     else:
         print('Invalid task name')

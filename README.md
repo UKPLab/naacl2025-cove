@@ -91,7 +91,7 @@ $ python src/veracity_llama3.py --dataset 5pils_ooc --split test
 Finally, evaluate the performance on context and veracity prediction.
 
 ```
-$ python src/evaluate.py --results_file 5pils_ooc_test.csv
+$ python src/evaluate.py --results_file 5pils_ooc_test.csv --dataset 5pils_ooc --split test --geonames_username your_user_name
 ```
  
 Evaluation of Location requires 🌍 [GeoNames](https://www.geonames.org/). You will need to create a (free) account and provide your account name as input.
