@@ -1,4 +1,3 @@
-
 import argparse
 import pandas as pd
 import tqdm
@@ -18,7 +17,7 @@ random.seed(42)
 
 
 if __name__=='__main__':
-    parser = argparse.ArgumentParser("Prepare input dataset for context prediction, grouping all evidence.")
+    parser = argparse.ArgumentParser("Predict the veracity of the caption given the image context.")
     parser.add_argument('--dataset', type=str,  default= "newsclippings", choices=['newsclippings', '5pils-ooc'],
                         help='The dataset to use.') 
     parser.add_argument('--split', type=str,  default= "test", choices=['train', 'val', 'test'],
@@ -38,7 +37,7 @@ if __name__=='__main__':
 
     #Knowledge gap completion
     if args.knowledge_gap_completion:
-        knowledge_answers = pd.read_csv(f"results/intermediate/knowledge_answers__{args.dataset}_{args.split}.csv")
+        knowledge_answers = pd.read_csv(f"results/intermediate/knowledge_context_answers_{args.dataset}_{args.split}.csv")
     else:
         knowledge_answers = []
 

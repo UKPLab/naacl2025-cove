@@ -19,7 +19,7 @@ random.seed(42)
 
 
 if __name__=='__main__':
-    parser = argparse.ArgumentParser("Prepare input dataset for context prediction, grouping all evidence.")
+    parser = argparse.ArgumentParser("Predict the context of an image based on evidence.")
     parser.add_argument('--dataset', type=str,  default= "newsclippings", choices=['newsclippings', '5pils-ooc'],
                         help='The dataset to use.') 
     parser.add_argument('--split', type=str,  default= "test", choices=['train', 'val', 'test'],

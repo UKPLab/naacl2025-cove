@@ -183,8 +183,6 @@ if __name__=='__main__':
                         if any(cosine_sim(img_clip_embedding, encoding) >= args.wiki_image_object_t for encoding in oven_encodings):
                             object_caption += f" The image shows {e}."
 
-            # if it is a direct string match, save direct match caption (from reverse search)
-            direct_match_captions = []
 
             #Veracity rules: check for direct matches
             non_alphanum_pattern = re.compile('[\W_]+')
@@ -200,17 +198,19 @@ if __name__=='__main__':
                     if re.search(caption_to_search, evidence_to_test):
                         wiki_clip_results[batch_index] = []
                         is_direct_match = True
-                        direct_match_captions.append(caption)
                         break
         
             # Adding direct search matches and non-matches
             if is_direct_match:
+                #String match with reverse image search results
+                #The other 2 rules are not studies
                 is_direct_search_match[batch_index] = False
                 is_direct_search_non_match[batch_index] = False
                 max_dir_search_sim[batch_index] = np.nan
                 min_dir_search_sim[batch_index] = np.nan
             else:
                 # use image id + caption as key
+                #Veracity rules (2) and (3): direct image search
                 direct_search_rows = direct_search_scores[(direct_search_scores['image_id'] == image_id) & (direct_search_scores['caption'] == caption_to_verify)]
                 max_dir_search_sim[batch_index] = direct_search_rows['clip_sim'].max()
                 min_dir_search_sim[batch_index] = direct_search_rows['clip_sim'].min()
@@ -258,7 +258,7 @@ if __name__=='__main__':
                     if not wiki_match:
                         #If match based on Wikipedia image similarity is not successful, try based on text
                         tagged_string = '[START_ENT] ' + named_person + ' [END_ENT]'
-                        disambiguated_person = genre_entity_linking(tagged_string)[0] 
+                        disambiguated_person = genre_entity_linking(tagged_string, model_genre, tokenizer_genre)[0] 
                         clip_entity = clip_model.encode(disambiguated_person)
                         img_clip_embedding = clip_embeddings[str(image_id)]
                         if cosine_sim(clip_entity, img_clip_embedding) >= args.wiki_text_t:
@@ -303,8 +303,6 @@ if __name__=='__main__':
                             "wiki_clip": wiki_clip_results,
                             "direct_search_match": is_direct_search_match,
                             "direct_search_non_match": is_direct_search_non_match,
-                            "max_direct_search_sim": max_dir_search_sim,
-                            "min_direct_search_sim": min_dir_search_sim,
                             "image_path": [item['image_path'] for item in instances[i:i+batch_size]],})
 
         output_path = f"results/intermediate/context_input_{args.dataset}_{args.split}.csv"

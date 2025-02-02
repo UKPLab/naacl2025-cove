@@ -14,10 +14,7 @@ if __name__=='__main__':
                         help='The dataset to use.') 
     parser.add_argument('--split', type=str,  default= "test", choices=['train', 'val', 'test'],
                         help='The dataset split to use.') 
-    parser.add_argument('--match_threshold', type=float, default= 0.92,
-                        help="Minimum threshold for direct match")
-    parser.add_argument('--non_match_threshold', type=float, default= 0.7,
-                        help="Minimum threshold for direct non match")
+
 
     args = parser.parse_args()
 

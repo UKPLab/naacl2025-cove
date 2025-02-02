@@ -17,8 +17,8 @@ if __name__=='__main__':
 
     #Load the entities file
     entities = []
-    #This file needs first to be manually added in wikipedia_entity_collection from http://storage.googleapis.com/gresearch/open-vision-language/Wiki6M_ver_1_0_title_only.jsonl
-    file_path = 'wikipedia_entity_collection/Wiki6M_ver_1_0_title_only.jsonl'
+    #This file needs first to be manually added to the root folder from http://storage.googleapis.com/gresearch/open-vision-language/Wiki6M_ver_1_0_title_only.jsonl
+    file_path = 'Wiki6M_ver_1_0_title_only.jsonl'
     with open(file_path, 'r', encoding='utf-8') as f:
         for line in f:
             #Parse each line as JSON and append to the list
