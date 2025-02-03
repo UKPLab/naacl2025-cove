@@ -35,7 +35,7 @@ $ python -m spacy download en_core_web_lg
 
 ## 5Pils-OOC dataset
 
-5Pils-OOC is a test dataset for out-of-context misinformation detection, derived from [5Pils](https://github.com/UKPLab/5pils) dataset. It contains 624 images, each paired with an accurate caption and an out-of-context caption. The dataset can be accessed in data/5pils-ooc/test.json. Instructions to download the images are the same as for 5Pils, and are explained in the next section.
+5Pils-OOC is a test dataset for out-of-context misinformation detection, derived from [5Pils](https://github.com/UKPLab/5pils) dataset. It contains 624 images, each paired with an accurate caption and an out-of-context caption. The dataset can be accessed in data/5pils-ooc/test.json. Instructions to download the images are the same as for 5Pils, and are explained in the next section. Like 5Pils, the dataset is released under a CC-BY-SA-4.0 license.
 
 
 ## Usage - prepare datasets
