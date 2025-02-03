@@ -187,11 +187,11 @@ $ python src/prepare_evidence.py  --dataset newsclippings --split val
 If you find this work relevant to your research or use this code in your work, please cite our paper as follows:
 
 ```bibtex 
-@inproceedings{tonglet-etal-2024-image,
-    title = "{COVE: COntext and VEracity prediction for out-of-context images",
-    author = "Tonglet, Jonathan  and
-      Thiem, Gabriel,  and
-      Gurevych, Iryna"
+@article{tonglet2024cove,
+  title={COVE: COntext and VEracity prediction for out-of-context images},
+  author={Tonglet, Jonathan and Thiem, Gabriel and Gurevych, Iryna},
+  journal={arXiv preprint arXiv:2502.XXXX},
+  year={2025}
 }
 ```
 
