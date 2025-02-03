@@ -22,9 +22,6 @@ Don't hesitate to send us an e-mail or report an issue, if something is broken (
   <img width="30%" src="assets/intro.png" alt="header" />
 </p>
 
-
-
-
 ## Environment
 
 Follow these instructions to recreate the environment used for all our experiments.
@@ -35,6 +32,10 @@ $ conda activate COVE
 $ pip install -r requirements.txt
 $ python -m spacy download en_core_web_lg
 ```
+
+## 5Pils-OOC dataset
+
+5Pils-OOC is a test dataset for out-of-context misinformation detection, derived from [5Pils](https://github.com/UKPLab/5pils) dataset. It contains 624 images, each paired with an accurate caption and an out-of-context caption. The dataset can be accessed in data/5pils-ooc/test.json. Instructions to download the images are the same as for 5Pils, and are explained in the next section.
 
 
 ## Usage - prepare datasets
