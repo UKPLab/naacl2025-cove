@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/github/license/UKPLab/ukp-project-template)](https://opensource.org/licenses/Apache-2.0)
 [![Python Versions](https://img.shields.io/badge/Python-3.9-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 
-This repository contains the implementation of COVE, introduced in the NAACL 2024 paper: ["COVE: COntext and VEracity prediction for out-of-context images](add_url). The code is released under an **Apache 2.0** license.
+This repository contains the implementation of COVE, introduced in the NAACL 2025 paper: ["COVE: COntext and VEracity prediction for out-of-context images](https://arxiv.org/abs/2502.01194). The code is released under an **Apache 2.0** license.
 
 Contact person: [Jonathan Tonglet](mailto:jonathan.tonglet@tu-darmstadt.de) 
 
@@ -13,7 +13,7 @@ Don't hesitate to send us an e-mail or report an issue, if something is broken (
 
 ## News 📢
 
-- Our paper is accepted to NAACL 2024 Main Conference! See you in Albuquerque 🌵
+- Our paper is accepted to NAACL 2025 Main Conference! See you in Albuquerque 🌵
 
 ## Abstract 
 > Images taken out of their context are the most prevalent form of multimodal misinformation. Debunking them requires  (1) providing the true context of the image and (2) checking the veracity of the image's caption. However, existing automated fact-checking methods fail to tackle both objectives explicitly. In this work, we introduce COVE, a new method that predicts first the true COntext of the image and then uses it to predict the VEracity of the caption. COVE beats the  SOTA context prediction model on all context items, often by more than five percentage points. It is competitive with the best veracity prediction models on synthetic data and outperforms them on real-world data, showing that it is beneficial to combine the two tasks sequentially. Finally, we conduct a human study that reveals that the predicted context is a reusable and interpretable artifact to verify new out-of-context captions for the same image.
@@ -190,8 +190,9 @@ If you find this work relevant to your research or use this code in your work, p
 @article{tonglet2024cove,
   title={COVE: COntext and VEracity prediction for out-of-context images},
   author={Tonglet, Jonathan and Thiem, Gabriel and Gurevych, Iryna},
-  journal={arXiv preprint arXiv:2502.XXXX},
-  year={2025}
+  journal={arXiv preprint arXiv:2502.01194},
+  year={2025},
+  url={https://arxiv.org/abs/2502.01194}
 }
 ```
 
