@@ -197,9 +197,9 @@ If you find this work relevant to your research or use the 5Pils-OOC dataset or 
 }
 ```
 
-For 5Pils-OOC, please also cite:
+For 5Pils-OOC, please also cite in the ACL anthology format:
 
-```
+```bibtex
 @inproceedings{tonglet-etal-2024-image,
     title = "{``}Image, Tell me your story!{''} Predicting the original meta-context of visual misinformation",
     author = "Tonglet, Jonathan  and
