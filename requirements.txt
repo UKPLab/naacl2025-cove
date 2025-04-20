@@ -25,7 +25,7 @@ sentence-transformers==3.0.1
 sentencepiece==0.1.99
 spacy==3.5.0
 tokenizers==0.20.0
-torch==2.1.2
+torch==2.6.0
 tqdm==4.64.0
 trafilatura==1.6.3
 transformers==4.46.0
