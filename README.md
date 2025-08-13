@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/github/license/UKPLab/ukp-project-template)](https://opensource.org/licenses/Apache-2.0)
 [![Python Versions](https://img.shields.io/badge/Python-3.9-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 
-This repository contains the implementation of COVE, introduced in the NAACL 2025 paper: ["COVE: COntext and VEracity prediction for out-of-context images](https://arxiv.org/abs/2502.01194). The code is released under an **Apache 2.0** license.
+This repository contains the implementation of COVE and the 5Pils-OOC dataset, introduced in the NAACL 2025 paper: ["COVE: COntext and VEracity prediction for out-of-context images](https://arxiv.org/abs/2502.01194). The code is released under an **Apache 2.0** license, while the dataset is released under **CC-BY-SA 4.0** license.
 
 Contact person: [Jonathan Tonglet](mailto:jonathan.tonglet@tu-darmstadt.de) 
 
@@ -35,7 +35,7 @@ $ python -m spacy download en_core_web_lg
 
 ## 5Pils-OOC dataset
 
-5Pils-OOC is a test dataset for out-of-context misinformation detection, derived from [5Pils](https://github.com/UKPLab/5pils) dataset. It contains 624 images, each paired with an accurate caption and an out-of-context caption. The dataset can be accessed in data/5pils-ooc/test.json. Instructions to download the images are the same as for 5Pils, and are explained in the next section. Like 5Pils, the dataset is released under a CC-BY-SA-4.0 license.
+5Pils-OOC is a test dataset for out-of-context misinformation detection, derived from [5Pils](https://github.com/UKPLab/5pils) dataset. It contains 624 images, each paired with an accurate caption and an out-of-context caption. The dataset can be accessed in [data/5pils-ooc](https://github.com/UKPLab/naacl2025-cove/tree/main/data/5pils_ooc). Instructions to download the images are the same as for 5Pils, and are explained in the next section.
 
 
 ## Usage - prepare datasets
