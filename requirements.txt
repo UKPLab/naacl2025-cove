@@ -29,4 +29,4 @@ torch==2.6.0
 tqdm==4.66.3
 trafilatura==1.6.3
 transformers==4.53.0
-vllm==0.8.5
+vllm==0.9.0
