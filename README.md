@@ -187,6 +187,7 @@ $ python src/prepare_evidence.py  --dataset newsclippings --split val
 
 If you find this work relevant to your research or use the 5Pils-OOC dataset or this code in your work, please cite our paper as follows:
 
+```bibtex
 @inproceedings{tonglet-etal-2025-cove,
     title = "COVE: COntext and VEracity prediction for out-of-context images",
     author = "Tonglet, Jonathan  and
@@ -204,6 +205,7 @@ If you find this work relevant to your research or use the 5Pils-OOC dataset or 
     doi = "10.18653/v1/2025.naacl-long.102",
     pages = "2029--2049",
 }
+```
 
 For 5Pils-OOC, please also cite in the ACL anthology format:
 
