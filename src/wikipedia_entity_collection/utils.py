@@ -1,5 +1,4 @@
-import requests
-import time 
+import time, os, requests
 from bs4 import BeautifulSoup
 from PIL import Image
 from io import BytesIO
@@ -98,7 +97,11 @@ def embed_query(query, model, processor, device):
     return query_features.cpu().numpy()
 
 
-def find_nearest_neighbors(image_path, 
+def find_nearest_neighbors(model,
+                           processor,
+                           device,
+                           image_path,
+                           image_root_folder, 
                            index, 
                            query='', 
                            t=0.3, 
@@ -106,19 +109,22 @@ def find_nearest_neighbors(image_path,
     '''
     Find the joint nearest neighbor of the image and the text query
     Params:
+        model: the model uses to compute the embeddings
+        processor: the preprocessing function for the embedding model
+        device: the device on which the model weights are loaded
         image_path (str): path to the image to match with entities
         index (obj): index of all 6M OVEN entities
         query (str): a text query that acts as a modifier to the image embedding
         t (float): the weight given to the text query when combining it with the image embedding
         k (int): the number of OVEN entities to retrieve
     '''
-    image_embedding = embed_image(image_path).astype(np.float32)
+    image_embedding = embed_image(os.path.join(image_root_folder, image_path), model, processor, device).astype(np.float32)
 
     if query == '': 
         # If no query is provided, return the nearest neighbors of the image
         joint_embedding = image_embedding
     else:
-        query_embedding = embed_query(query).astype(np.float32)
+        query_embedding = embed_query(query, model, processor, device).astype(np.float32)
         joint_embedding = t * query_embedding + (1-t) * image_embedding
     distances, indices = index.search(joint_embedding, k)
     return distances, indices

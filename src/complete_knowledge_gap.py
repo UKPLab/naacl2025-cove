@@ -2,7 +2,6 @@ import argparse
 import pandas as pd
 import spacy
 import random
-import numpy as np
 import os
 import torch
 from vllm import LLM
@@ -22,9 +21,9 @@ if __name__=='__main__':
                         help='The dataset split to use.') 
     parser.add_argument('--batch_size', type=int,  default= 128,
                         help='Number of instances to process in each batch')
-    parser.add_argumen('--model_path', type=str, default="meta-llama/Meta-Llama-3-8B-Instruct",
+    parser.add_argument('--model_path', type=str, default="meta-llama/Meta-Llama-3-8B-Instruct",
                         help='Path to the LLM used for QA')
-    parser.add_argumen('--ip', type=str, required = True,
+    parser.add_argument('--ip', type=str, required = True,
                         help='Path to the IP where the WikiChat server is running')
         
     args = parser.parse_args()
@@ -38,7 +37,8 @@ if __name__=='__main__':
         data = json.load(open(f'data/5pils_ooc/test.json', 'r'))
         images_root_folder = 'data/5pils_ooc'
     context_results = pd.read_csv(f'results/intermediate/context_output_{args.dataset}_{args.split}.csv')
-
+    context_results['predicted_context_QA'] = context_results['predicted_context_QA'].fillna('')
+    context_results = context_results.to_dict(orient='records')
     #Load model
     llm = LLM(
     args.model_path,
@@ -55,17 +55,17 @@ if __name__=='__main__':
 
     #Prepare instances
     instances = []
-    for ix in range(len(data)):
+    for ix in range(len(context_results)):
 
         instance_dict = {}        
-        instance_dict['image_id'] = data[ix]['image_id']
-        instance_dict['caption_id'] = data[ix]['id']
+        instance_dict['image_id'] = context_results[ix]['image_id']
+        instance_dict['caption_id'] = context_results[ix]['id']
         if args.dataset=='newsclippings':
-            instance_dict['caption'] = data[ix]['false_caption'] if 'false_caption' in data[ix] else data[ix]['true_caption']
+            instance_dict['caption'] = context_results[ix]['false_caption'] if 'false_caption' in data[ix] else data[ix]['true_caption']
         else:
-            instance_dict['caption'] = data[ix]['caption']
-        instance_dict['image_path'] = os.path.join(images_root_folder, data[ix]['image_path'])
-        instance_dict['context'] = context_results[(context_results['image_id'] == data[ix]['image_id']) & (context_results['caption'] == instance_dict['caption'])]['predicted_context_QA'].values[0]
+            instance_dict['caption'] = context_results[ix]['caption']
+        instance_dict['image_path'] = context_results[ix]['image_path']
+        instance_dict['context'] =context_results[ix]['predicted_context_QA']
 
         instances.append(instance_dict)
 
@@ -81,22 +81,14 @@ if __name__=='__main__':
     
 
     #Answer the knowledge questions
-    knowledge_questions = pd.read_csv(question_output_path)
+    knowledge_questions = pd.read_csv(question_output_path).to_dict(orient='records')
     instances = []
 
-    for ix in range(len(data)):
+    for ix in range(len(instances)):
 
-        instance_dict = {}        
-        instance_dict['image_id'] = data[ix]['image_id']
-        instance_dict['caption_id'] = data[ix]['id']
-        if args.dataset=='newsclippings':
-            instance_dict['caption'] = data[ix]['false_caption'] if 'false_caption' in data[ix] else data[ix]['true_caption']
-        else:
-            instance_dict['caption'] = data[ix]['caption']
-        instance_dict['image_path'] = os.path.join(images_root_folder, data[ix]['image_path'])
-        instance_dict['date_questions'] = knowledge_questions[(knowledge_questions['image_id'] == data[ix]['image_id']) & (knowledge_questions['caption_id'] == data[ix]['id'])]['date_questions'].values[0]
-        instance_dict['location_questions'] = knowledge_questions[(knowledge_questions['image_id'] == data[ix]['image_id']) & (knowledge_questions['caption_id'] == data[ix]['id'])]['location_questions'].values[0]
-        instances.append(instance_dict)
+        instances[ix]['date_questions'] = knowledge_questions[ix]['date_questions']
+        instances[ix]['location_questions'] = knowledge_questions[ix]['location_questions']
+
 
     answer_output_path = f"results/intermediate/knowledge_answers_{args.dataset}_{args.split}.csv"
     knwoledge_answer_generation(instances,
@@ -108,19 +100,19 @@ if __name__=='__main__':
 
 
     #Validate the answers and update context if possible
-    knowledge_answers = pd.read_csv(answer_output_path)
-
+    knowledge_answers = pd.read_csv(answer_output_path).to_dict(orient='records')
+    image_path_to_context  = {k['image_path']: k['predicted_context_QA'] for k in context_results}
     instances = []
 
     for ix in range(len(knowledge_answers)):
 
         instance_dict = {}        
-        instance_dict['image_id'] = knowledge_answers.iloc[ix]['image_id']
-        instance_dict['caption_id'] = knowledge_answers.iloc[ix]['caption_id']
-        instance_dict['image_path'] = knowledge_answers.iloc[ix]['image_path']
-        instance_dict['answer'] = knowledge_answers.iloc[ix]['all_answers']
-        instance_dict['question'] = knowledge_answers.iloc[ix]['all_questions']
-        instance_dict['context'] = context_results[(context_results['image_id'] == instance_dict['image_id']) & (context_results['caption_id'] == instance_dict['caption_id'])]['predicted_context_QA'].values[0]
+        instance_dict['image_id'] = knowledge_answers[ix]['image_id']
+        instance_dict['caption_id'] = knowledge_answers[ix]['caption_id']
+        instance_dict['image_path'] = knowledge_answers[ix]['image_path']
+        instance_dict['answer'] = knowledge_answers[ix]['all_answers']
+        instance_dict['question'] = knowledge_answers[ix]['all_questions']
+        instance_dict['context'] = knowledge_answers[ix]['context']
         instances.append(instance_dict)
 
     context_answer_output_path = f"results/intermediate/knowledge_context_answers_{args.dataset}_{args.split}.csv"

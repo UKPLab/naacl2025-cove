@@ -49,47 +49,49 @@ if __name__=='__main__':
         else:
             caption_to_verify = item['caption']
         ner_caption = nlp(caption_to_verify)
-        clip_embedding = image_embeddings[str(item['image_id'])]
+        try:
+            clip_embedding = image_embeddings[str(item['image_id'])]
 
-        buildings = list(set([e.text for e in ner_caption.ents if e.label_ == 'FAC']))
-        for b in buildings:
-            url= b.replace(' ', '_')
-            wiki_path = f'wikipedia_encodings/{url}'
-            scores = []
-            if os.path.exists(f'{wiki_path}/encodings.npy'):
-                wiki_encodings = np.load(f'{wiki_path}/encodings.npy')            
-                for wiki_encoding in wiki_encodings:
-                    # preventing errors with saved embeddings
-                    if len(wiki_encoding) != 768:
-                        continue 
-                    score = cosine_sim(clip_embedding, wiki_encoding)
-                    scores.append(score)
-                image_ids.append(item['image_id'])
-                caption_ids.append(item['id'])
-                entity_labels.append('FAC')
-                entity_names.append(b)
-                match_scores.append(scores)
-                image_paths.append(os.path.join(images_root_folder, item['image_path']))
+            buildings = list(set([e.text for e in ner_caption.ents if e.label_ == 'FAC']))
+            for b in buildings:
+                url= b.replace(' ', '_')
+                wiki_path = f'wikipedia_encodings/{url}'
+                scores = []
+                if os.path.exists(f'{wiki_path}/encodings.npy'):
+                    wiki_encodings = np.load(f'{wiki_path}/encodings.npy')            
+                    for wiki_encoding in wiki_encodings:
+                        # preventing errors with saved embeddings
+                        if len(wiki_encoding) != 768:
+                            continue 
+                        score = cosine_sim(clip_embedding, wiki_encoding)
+                        scores.append(score)
+                    image_ids.append(item['image_id'])
+                    caption_ids.append(item['id'])
+                    entity_labels.append('FAC')
+                    entity_names.append(b)
+                    match_scores.append(scores)
+                    image_paths.append(os.path.join(images_root_folder, item['image_path']))
 
-        products = list(set([e.text for e in ner_caption.ents if e.label_ == 'PRODUCT']))
-        for p in products:
-            url = p.replace(' ', '_')
-            wiki_path = f'wikipedia_encodings/{url}'
-            scores = []
-            if os.path.exists(f'{wiki_path}/encodings.npy'):
-                wiki_encodings = np.load(f'{wiki_path}/encodings.npy')           
-                for wiki_encoding in wiki_encodings:
-                    # preventing errors with with saved embeddings
-                    if len(wiki_encoding) != 768:
-                        continue 
-                    score = cosine_sim(clip_embedding, wiki_encoding)
-                    scores.append(score)
-                image_ids.append(item['image_id'])
-                caption_ids.append(item['id'])
-                entity_labels.append('PRODUCT')
-                entity_names.append(p)
-                match_scores.append(scores)
-                image_paths.append(os.path.join(images_root_folder, item['image_path']))      
-
+            products = list(set([e.text for e in ner_caption.ents if e.label_ == 'PRODUCT']))
+            for p in products:
+                url = p.replace(' ', '_')
+                wiki_path = f'wikipedia_encodings/{url}'
+                scores = []
+                if os.path.exists(f'{wiki_path}/encodings.npy'):
+                    wiki_encodings = np.load(f'{wiki_path}/encodings.npy')           
+                    for wiki_encoding in wiki_encodings:
+                        # preventing errors with with saved embeddings
+                        if len(wiki_encoding) != 768:
+                            continue 
+                        score = cosine_sim(clip_embedding, wiki_encoding)
+                        scores.append(score)
+                    image_ids.append(item['image_id'])
+                    caption_ids.append(item['id'])
+                    entity_labels.append('PRODUCT')
+                    entity_names.append(p)
+                    match_scores.append(scores)
+                    image_paths.append(os.path.join(images_root_folder, item['image_path']))      
+        except:
+            pass
     df = pd.DataFrame({'image_id': image_ids, 'caption_id': caption_ids, 'entity_label': entity_labels, 'entity_name': entity_names, 'match_scores': match_scores, 'image_path': image_paths})
     df.to_csv(f'data/{args.dataset}/evidence/{args.split}/buildings_products_scores.csv', index=False)

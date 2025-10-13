@@ -16,7 +16,7 @@ if __name__=='__main__':
                         help='The dataset to use.') 
     parser.add_argument('--split', type=str,  default= "test", choices=['train', 'val', 'test'],
                         help='The dataset split to use.') 
-    parser.add_argumen('--get_oven_embeddings', type=int, default=1, choices=[0,1],
+    parser.add_argument('--get_oven_embeddings', type=int, default=1, choices=[0,1],
                        help='If 1, assumes there is a list of oven entities available for that dataset split to be encoded.')
     
 

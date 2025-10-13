@@ -27,7 +27,7 @@ if __name__=='__main__':
                         help='The dataset split to use.') 
     parser.add_argument('--model_path', type=str, default = "",
                         help='Name of the location to save the model.')
-    parser.add_argumen('--train_model', type=int, default=1,
+    parser.add_argument('--train_model', type=int, default=1,
                         help='Whether to fine-tune a model or use an existing local checkpoint (model_path)')
     parser.add_argument('--weight_decay', type=float, default=0.1,
                         help='Weight decay value')

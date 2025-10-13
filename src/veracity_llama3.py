@@ -24,9 +24,9 @@ if __name__=='__main__':
                         help='The dataset split to use.') 
     parser.add_argument('--batch_size', type=int,  default= 128,
                         help='Number of instances to process in each batch')
-    parser.add_argumen('--model_path', type=str, default="meta-llama/Meta-Llama-3-8B-Instruct",
+    parser.add_argument('--model_path', type=str, default="meta-llama/Meta-Llama-3-8B-Instruct",
                         help='Path to the LLM used for QA')
-    parser.add_argumen('--knowledge_gap_completion', type=int, default=0,
+    parser.add_argument('--knowledge_gap_completion', type=int, default=0,
                         help='If 1, include answers obtained with knowledge gap completion for date and location')
     
     args = parser.parse_args()

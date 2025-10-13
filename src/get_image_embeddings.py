@@ -111,6 +111,8 @@ if __name__=='__main__':
     # save the embeddings of the images in a JSON file
     for key, value in clip_image_embeddings.items():
         clip_image_embeddings[key] = value.tolist()
+    os.makedirs(f"data/{args.dataset}/embeddings", exist_ok=True)
+    os.makedirs(f"data/{args.dataset}/embeddings/{args.split}", exist_ok=True)   
     json.dump(clip_image_embeddings, open(f"data/{args.dataset}/embeddings/{args.split}/clip_L14.json", "w"))
     #save the face encodings
     json.dump(face_image_embeddings, open(f'data/{args.dataset}/embeddings/{args.split}/face_embeddings.json', 'w'))

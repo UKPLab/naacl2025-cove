@@ -289,16 +289,17 @@ def caption_object(instances,
                 cropped_img = obj[2]
 
             input_text = prompt_dict[category].format(label)
+            if cropped_img != "":
+                inputs = processor(input_text,
+                                cropped_img,
+                                padding=True,
+                                return_tensors='pt').to(0, torch.float16)
+                output_sequences = model.generate(**inputs, max_new_tokens=max_tokens, temperature=0, top_p=1)
+                outputs = processor.batch_decode(output_sequences, skip_special_tokens=True)
 
-            inputs = processor(input_text,
-                            cropped_img,
-                            padding=True,
-                            return_tensors='pt').to(0, torch.float16)
-            output_sequences = model.generate(**inputs, max_new_tokens=max_tokens, temperature=0, top_p=1)
-            outputs = processor.batch_decode(output_sequences, skip_special_tokens=True)
-
-            captions.append(outputs[0].split("[/INST]")[-1].strip().split('\n')[0])
-
+                captions.append(outputs[0].split("[/INST]")[-1].strip().split('\n')[0])
+            else:
+                captions.append("")
         len_to_add = len(captions)
 
         data = pd.DataFrame({"image_id": [instances['image_id'][i]]*len_to_add,

@@ -1,4 +1,4 @@
-import argparse
+import argparse, ast
 import pandas as pd
 import tqdm
 import random
@@ -26,7 +26,7 @@ if __name__=='__main__':
                         help='The dataset split to use.') 
     parser.add_argument('--batch_size', type=int,  default= 128,
                         help='Number of instances to process in each batch')
-    parser.add_argumen('--model_path', type=str, default="meta-llama/Meta-Llama-3-8B-Instruct",
+    parser.add_argument('--model_path', type=str, default="meta-llama/Meta-Llama-3-8B-Instruct",
                         help='Path to the LLM used for QA')
     
     args = parser.parse_args()
@@ -82,7 +82,7 @@ if __name__=='__main__':
     questions_no_evidence = [people_Q, things_Q, event_Q, date_Q, location_Q, motivation_Q]
 
     batch_size = args.batch_size
-    for i in tqdm.tqdm(range(0, len(instances), batch_size)):
+    for i in tqdm.tqdm(range(0, len(instances), args.batch_size)):
 
 
         if i+args.batch_size > len(instances):
@@ -101,8 +101,8 @@ if __name__=='__main__':
             direct_match_captions = []
             #Veracity rules: check for direct matches
             non_alphanum_pattern = re.compile('[\W_]+')
-            if sample['evidence'] != []:
-                evidence_captions = sample['evidence']
+            evidence_captions = ast.literal_eval(sample['evidence_captions'])
+            if evidence_captions != []:
                 for caption in evidence_captions:
                     # lowercase and remove punctuation and whitespaces
                     caption_to_search = sample['caption'].lower()
@@ -115,11 +115,9 @@ if __name__=='__main__':
                         original_veracity_outputs[batch_index] = "Direct match found in evidence."
                         break
             #Sort web evidence
-            if sample['evidence'] != []:
+            if evidence_captions != []:
                 if direct_match_captions != []:
                     evidence_captions = direct_match_captions
-                else:
-                    evidence_captions = sample['evidence']
                 counts = count_evidence_NER(evidence_captions, nlp)
                 # list of caption lists (ordered by NER counts)
                 sorted_evidence = sort_evidence_by_QA(evidence_captions, counts)
@@ -161,7 +159,7 @@ if __name__=='__main__':
 
             caption_to_verify = sample['caption']
 
-            if sample['evidence'] != []: # with evidence
+            if sample['evidence_captions'] != []: # with evidence
                 answers = [o.outputs[0].text.split('\n\n')[-1].strip() for o in QA_outputs[output_index:output_index+7]]
                 # standardize to "Unknown." if unknown
                 for k in range(len(answers)):
@@ -169,14 +167,16 @@ if __name__=='__main__':
                         answers[k] = 'Unknown.'
 
                 #Make sure that wiki matches are included in the people answer
-                if answers[0] == 'Unknown.' and any(res[1] == 'wiki_image' for res in sample['wiki_clip'][batch_index]):
-                    answers[0] = ', '.join([res[0] for res in sample['wiki_clip'][batch_index] if res[1] == 'wiki_image'])
-                
+                try:
+                    if answers[0] == 'Unknown.' and any(res[1] == 'wiki_image' for res in sample['wiki_clip'][batch_index]):
+                        answers[0] = ', '.join([res[0] for res in sample['wiki_clip'][batch_index] if res[1] == 'wiki_image'])
+                except:
+                    pass
                 # remove unknown answers
                 answer_items = ['People: ', 'Things: ', 'Event: ', 'Date: ', 'Location: ', 'Motivation: ', 'Source: ']
                 known_answers = []
                 for k in range(len(answers)):
-                    if answers[k] == 'Unknown.':
+                    if answers[k] == 'Unknown.' or answers[k]=='':
                             continue
                     else:
                         known_answers.append(answer_items[k] + f"{answers[k]}")
@@ -195,9 +195,11 @@ if __name__=='__main__':
                         answers[k] = 'Unknown.'
 
                 # make sure that wiki matches are included in the people answer (Wiki matches are enforced but not clip matches)
-                if answers[0] == 'Unknown.' and any(res[1] == 'wiki_image' for res in sample['wiki_clip'][batch_index]):
-                    answers[0] = ', '.join([res[0] for res in sample['wiki_clip'][batch_index] if res[1] == 'wiki_image'])
-
+                try:
+                    if answers[0] == 'Unknown.' and any(res[1] == 'wiki_image' for res in sample['wiki_clip'][batch_index]):
+                        answers[0] = ', '.join([res[0] for res in sample['wiki_clip'][batch_index] if res[1] == 'wiki_image'])
+                except:
+                    pass
                 # remove unknown answers
                 answer_items = ['People: ', 'Things: ', 'Event: ', 'Date: ', 'Location: ', 'Motivation: ']
                 known_answers = []
@@ -221,7 +223,7 @@ if __name__=='__main__':
             predicted_contexts[index] = answers.replace('\n', '').strip().replace('    ', ' ')
 
 
-        instances = pd.DataFrame({"image_id": [item['image_id'] for item in instances[i:i+batch_size]],
+        results_to_save = pd.DataFrame({"image_id": [item['image_id'] for item in instances[i:i+batch_size]],
                             "caption_id": [item['caption_id'] for item in instances[i:i+batch_size]],
                             "caption": [item['caption'] for item in instances[i:i+batch_size]],
                             "true_caption": [item['true_caption'] for item in instances[i:i+batch_size]],

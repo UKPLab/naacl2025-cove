@@ -50,12 +50,9 @@ if __name__=='__main__':
     text_embeddings = np.vstack(all_embeddings).astype(np.float32)
     print('Number of embeddings: %s'%len(text_embeddings))
     # Create a FAISS index
-    res = faiss.StandardGpuResources()  # Use a single GPU
     d = text_embeddings.shape[1]
     index_cpu = faiss.IndexFlatL2(d)  # Create a CPU index
-    index_gpu = faiss.index_cpu_to_gpu(res, 0, index_cpu)  # Move index to GPU
     # Add text embeddings to the index
-    index_gpu.add(text_embeddings)
-    index_cpu = faiss.index_gpu_to_cpu(index_gpu)
+    index_cpu.add(text_embeddings)
     #Important note: the OVEN index takes up to 10GB in memory
     faiss.write_index(index_cpu, "wikipedia_entity_collection/oven.index") 

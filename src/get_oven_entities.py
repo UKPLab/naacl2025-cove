@@ -15,6 +15,8 @@ if __name__=='__main__':
                         help='The dataset to use.') 
     parser.add_argument('--split', type=str,  default= "test", choices=['train', 'val', 'test'],
                         help='The dataset split to use.') 
+    parser.add_argument('--t', type=int, default=0.3,
+                        help='Similarity threshold to consider a match with a Wikipedia entity') 
     parser.add_argument('--k', type=int, default=5,
                         help='Number of entities to retrieve') 
     parser.add_argument('--threshold', type=float, default=0.3,
@@ -73,13 +75,18 @@ if __name__=='__main__':
         else:
             query = 'A person'
         #Retrieve top 5
-        distances, indices = find_nearest_neighbors(os.path.join(dir,im_path),
-                                                        query, 
-                                                        t=args.t, 
-                                                        k=args.k)  
-            
-        #Output: list of the top 5 entities
-        topk_entities=[entities[idx] for idx in indices.flatten()]
+        try:
+            distances, indices = find_nearest_neighbors(model, processor,
+                                                            device, im_path,  images_root_folder,
+                                                                index,
+                                                                query, 
+                                                                t=args.t, 
+                                                                k=args.k)  
+                
+            #Output: list of the top 5 entities
+            topk_entities=[entities[idx] for idx in indices.flatten()]
+        except:
+            topk_entities = []
         results.append({im_path:topk_entities}) 
 
     output_path = f'data/{args.dataset}/evidence/{args.split}/oven_entities.json'
