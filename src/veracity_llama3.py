@@ -34,7 +34,6 @@ if __name__=='__main__':
 
     #Load data
     instances = pd.read_csv(f"results/intermediate/context_output_{args.dataset}_{args.split}.csv").to_dict(orient="records")
-
     #Knowledge gap completion
     if args.knowledge_gap_completion:
         knowledge_answers = pd.read_csv(f"results/intermediate/knowledge_context_answers_{args.dataset}_{args.split}.csv")
@@ -84,7 +83,7 @@ if __name__=='__main__':
             caption_id = sample['caption_id']
 
             # lists of context QA answers, remove unknown answers
-            if args.knowlege_gap_completion:
+            if args.knowledge_gap_completion:
                 all_context_qa = knowledge_answers[(knowledge_answers['image_id'] == image_id) & (knowledge_answers['caption_id'] == caption_id)]
                 qa_locations = all_context_qa[all_context_qa['all_questions'].str.startswith('Where')].all_context_answers.values
                 qa_dates = all_context_qa[all_context_qa['all_questions'].str.startswith('When')].all_context_answers.values
