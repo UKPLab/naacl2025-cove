@@ -58,6 +58,8 @@ $ python src/prepare_newsclippings.py
 - Follow the instructions on the 5Pils [repo](https://github.com/UKPLab/5pils) to download the images of 5Pils. Place the images under data/5pils-ooc/processed_img/
 - If you face issues downloading the images, please contact jonathan.tonglet@tu-darmstadt.de
 
+- The original reverse image search evidence can be obtained on the 5Pils  [repo](https://github.com/UKPLab/5pils)  ⚠️Unlike with NewsCLIPpings, the RIS evidence do not contain visual entities identified by the Google API⚠️
+
 - Download the evidence images and the corresponding webpage content using the following script
 
 ```
